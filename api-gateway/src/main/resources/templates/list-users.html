@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>قائمة المستخدمين</title>
+</head>
+<body>
+<center>
+    <h2>قائمة المستخدمين</h2>
+    <button id="loadUsersBtn">تحميل المستخدمين</button>
+    <ul id="usersList"></ul>
+</center>
+
+<script>
+    document.getElementById('loadUsersBtn').addEventListener('click', () => {
+        fetch('/users', {  // مسار مختصر من API Gateway
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) return response.json();
+                else throw new Error('فشل تحميل المستخدمين');
+            })
+            .then(users => {
+                const list = document.getElementById('usersList');
+                list.innerHTML = '';
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${user.id} - الاسم: ${user.name} - الإيميل: ${user.email} - الدور: ${user.role}`;
+                    list.appendChild(li);
+                });
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    });
+</script>
+</body>
+</html>

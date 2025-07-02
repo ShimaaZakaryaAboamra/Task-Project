@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task List</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: auto;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h2>قائمة المهام</h2>
+
+<table id="tasksTable">
+  <thead>
+  <tr>
+    <th>العنوان</th>
+    <th>الوصف</th>
+    <th>الحالة</th>
+    <th>الأولوية</th>
+    <th>تاريخ الاستحقاق</th>
+    <th>المستخدم المعين</th>
+    <th>المرحلة</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- المهام ستُعرض هنا -->
+  </tbody>
+</table>
+
+<script>
+  // جلب المهام من خدمة task-service
+  fetch('http://localhost:8081/api/tasks')
+          .then(response => response.json())
+          .then(tasks => {
+            const tbody = document.querySelector('#tasksTable tbody');
+            tbody.innerHTML = '';
+
+            if (tasks.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="7">لا توجد مهام</td></tr>';
+              return;
+            }
+
+            tasks.forEach(task => {
+              const tr = document.createElement('tr');
+
+              tr.innerHTML = `
+                    <td>${task.title}</td>
+                    <td>${task.description}</td>
+                    <td>${task.status}</td>
+                    <td>${task.priority}</td>
+                    <td>${task.dueDate}</td>
+                    <td>${task.assignedUserId}</td>
+                    <td>${task.phase}</td>
+                `;
+
+              tbody.appendChild(tr);
+            });
+          })
+          .catch(error => {
+            console.error('خطأ في جلب المهام:', error);
+            const tbody = document.querySelector('#tasksTable tbody');
+            tbody.innerHTML = '<tr><td colspan="7">فشل تحميل المهام</td></tr>';
+          });
+</script>
+
+</body>
+</html>

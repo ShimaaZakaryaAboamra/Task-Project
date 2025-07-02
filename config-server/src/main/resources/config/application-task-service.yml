@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: task-service
+  datasource:
+    url: jdbc:h2:file:~/taskdb
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update

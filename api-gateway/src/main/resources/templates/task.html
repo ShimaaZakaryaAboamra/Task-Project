@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Task</title>
+</head>
+<body>
+<center>
+    <h2>Create a New Task</h2>
+
+    <form id="taskForm">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="status">Status:</label><br>
+        <select id="status" name="status" required>
+            <option value="To do">To do</option>
+            <option value="In progress">In progress</option>
+            <option value="Done">Done</option>
+        </select><br><br>
+
+        <label for="priority">Priority:</label><br>
+        <select id="priority" name="priority" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+        </select><br><br>
+
+        <label for="dueDate">Due Date:</label><br>
+        <input type="date" id="dueDate" name="dueDate" required><br><br>
+
+        <label for="assignedUserId">Assigned User:</label><br>
+        <select id="assignedUserId" name="assignedUserId" required>
+            <option value="">-- Loading users... --</option>
+        </select><br><br>
+
+        <label for="phase">Phase:</label><br>
+        <select id="phase" name="phase" required>
+            <option value="Planning">Planning</option>
+            <option value="Design">Design</option>
+            <option value="Development">Development</option>
+            <option value="Testing">Testing</option>
+            <option value="Deployment">Deployment</option>
+        </select><br><br>
+
+        <input type="hidden" id="boardId" name="boardId" value="456" />
+        <input type="hidden" id="createdBy" name="createdBy" value="456" />
+
+        <button type="submit">Create Task</button>
+    </form>
+
+    <script>
+        // تحميل المستخدمين من user-service (localhost:8080)
+        fetch('http://localhost:8080/api/users')
+            .then(response => response.json())
+            .then(users => {
+                const select = document.getElementById('assignedUserId');
+                select.innerHTML = '';
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.userId;  // تأكد أن userId موجود في JSON اليوزرز
+                    option.text = user.name;     // اسم المستخدم للعرض
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('خطأ في جلب المستخدمين:', error);
+                const select = document.getElementById('assignedUserId');
+                select.innerHTML = '<option value="">فشل تحميل المستخدمين</option>';
+            });
+
+        // إرسال بيانات النموذج لإنشاء مهمة جديدة في task-service (localhost:8081)
+        document.getElementById('taskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const assignedUserId = document.getElementById('assignedUserId').value;
+            if (!assignedUserId) {
+                alert('يرجى اختيار مستخدم!');
+                return;
+            }
+
+            // تحويل التاريخ إلى صيغة ISO
+            const dueDateInput = document.getElementById('dueDate').value;
+            const dueDateISO = new Date(dueDateInput).toISOString();
+
+            const taskData = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                status: document.getElementById('status').value,
+                priority: document.getElementById('priority').value,
+                dueDate: dueDateISO,
+                assignedUserId: assignedUserId,
+                phase: document.getElementById('phase').value,
+                boardId: document.getElementById('boardId').value,
+                createdBy: document.getElementById('createdBy').value
+            };
+
+            fetch('http://localhost:8081/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('فشل إنشاء المهمة');
+                    return response.json();
+                })
+                .then(data => {
+                    alert('تم إنشاء المهمة بنجاح!');
+                    this.reset();
+                })
+                .catch(error => alert(error.message));
+        });
+    </script>
+
+</center>
+</body>
+</html>
