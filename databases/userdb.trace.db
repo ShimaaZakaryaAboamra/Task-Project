@@ -1,0 +1,26 @@
+2025-06-28 18:33:36.132664+03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "1 (USERS: ""ID"" UUID NOT NULL)"; SQL statement:
+INSERT INTO users (id, name, email, password, role, created_at) 
+VALUES (1, 'shimaa', 'shimaa@gmail.com', 'ASDF', 'Admin', CURRENT_TIMESTAMP) [22018-224]
+2025-06-28 18:33:38.980997+03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "1 (USERS: ""ID"" UUID NOT NULL)"; SQL statement:
+INSERT INTO users (id, name, email, password, role, created_at) 
+VALUES (1, 'shimaa', 'shimaa@gmail.com', 'ASDF', 'Admin', CURRENT_TIMESTAMP) [22018-224]
+2025-06-28 19:32:09.735959+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASKS" not found; SQL statement:
+SELECT * FROM tasks [42102-224]
+2025-06-28 19:32:17.085308+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASKS" not found; SQL statement:
+SELECT * FROM Tasks [42102-224]
+2025-06-28 19:32:18.085055+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASKS" not found; SQL statement:
+SELECT * FROM Tasks [42102-224]
+2025-06-29 11:20:16.568033+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASK" not found; SQL statement:
+SELECT * FROM task [42102-224]
+2025-06-29 11:20:21.879447+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASK" not found; SQL statement:
+SELECT * FROM Task [42102-224]
+2025-06-29 11:20:22.980608+03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TASK" not found; SQL statement:
+SELECT * FROM Task [42102-224]
