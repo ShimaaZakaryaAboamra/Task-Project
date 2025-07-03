@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Task List</title>
+  <title>قائمة المهام</title>
   <style>
     table {
       border-collapse: collapse;
@@ -34,7 +34,7 @@
     <th>الحالة</th>
     <th>الأولوية</th>
     <th>تاريخ الاستحقاق</th>
-    <th>المستخدم المعين</th>
+    <th>المستخدم المعين (ID)</th>
     <th>المرحلة</th>
   </tr>
   </thead>
@@ -44,31 +44,34 @@
 </table>
 
 <script>
-  // جلب المهام من خدمة task-service
-  fetch('http://localhost:8081/api/tasks')
-          .then(response => response.json())
+  fetch('http://localhost:8081/tasks')
+          .then(response => {
+            if (!response.ok) throw new Error('فشل تحميل المهام');
+            return response.json();
+          })
           .then(tasks => {
             const tbody = document.querySelector('#tasksTable tbody');
             tbody.innerHTML = '';
 
-            if (tasks.length === 0) {
+            if (!tasks || tasks.length === 0) {
               tbody.innerHTML = '<tr><td colspan="7">لا توجد مهام</td></tr>';
               return;
             }
 
             tasks.forEach(task => {
+              // تحويل تاريخ الاستحقاق إلى تنسيق 'يوم-شهر-سنة'
+              const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('ar-EG') : '-';
+
               const tr = document.createElement('tr');
-
               tr.innerHTML = `
-                    <td>${task.title}</td>
-                    <td>${task.description}</td>
-                    <td>${task.status}</td>
-                    <td>${task.priority}</td>
-                    <td>${task.dueDate}</td>
-                    <td>${task.assignedUserId}</td>
-                    <td>${task.phase}</td>
-                `;
-
+          <td>${task.title || '-'}</td>
+          <td>${task.description || '-'}</td>
+          <td>${task.status || '-'}</td>
+          <td>${task.priority || '-'}</td>
+          <td>${dueDate}</td>
+          <td>${task.assignedUserId || '-'}</td>
+          <td>${task.phase || '-'}</td>
+        `;
               tbody.appendChild(tr);
             });
           })

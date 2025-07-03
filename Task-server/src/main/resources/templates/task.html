@@ -53,36 +53,38 @@
     </form>
 
     <script>
-        // تحميل المستخدمين من user-service (localhost:8080)
-        fetch('http://localhost:8080/api/users')
-            .then(response => response.json())
+        // تأكدي تشغلي الـ User Service على بورت 8080 ومساره /users
+        fetch('http://localhost:8080/users')
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to fetch users');
+                return response.json();
+            })
             .then(users => {
                 const select = document.getElementById('assignedUserId');
-                select.innerHTML = '';
+                select.innerHTML = ''; // ننظف الخيارات القديمة
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.userId;  // تأكد أن userId موجود في JSON اليوزرز
-                    option.text = user.name;     // اسم المستخدم للعرض
+                    option.value = user.id || user.userId;  // تأكدي من الحقل الصحيح
+                    option.text = user.name || user.username || 'Unknown';
                     select.appendChild(option);
                 });
             })
             .catch(error => {
-                console.error('خطأ في جلب المستخدمين:', error);
+                console.error('Error fetching users:', error);
                 const select = document.getElementById('assignedUserId');
-                select.innerHTML = '<option value="">فشل تحميل المستخدمين</option>';
+                select.innerHTML = '<option value="">Failed to load users</option>';
             });
 
-        // إرسال بيانات النموذج لإنشاء مهمة جديدة في task-service (localhost:8081)
         document.getElementById('taskForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const assignedUserId = document.getElementById('assignedUserId').value;
             if (!assignedUserId) {
-                alert('يرجى اختيار مستخدم!');
+                alert('Please select a user!');
                 return;
             }
 
-            // تحويل التاريخ إلى صيغة ISO
+            // تاريخ بصيغة ISO (yyyy-MM-dd)
             const dueDateInput = document.getElementById('dueDate').value;
             const dueDateISO = new Date(dueDateInput).toISOString();
 
@@ -98,20 +100,24 @@
                 createdBy: document.getElementById('createdBy').value
             };
 
-            fetch('http://localhost:8081/api/tasks', {
+            // تأكدي شغل الـ Task Service على بورت 8081 ومسار /tasks
+            fetch('http://localhost:8081/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(taskData)
             })
                 .then(response => {
-                    if (!response.ok) throw new Error('فشل إنشاء المهمة');
+                    if (!response.ok) throw new Error('Failed to create task');
                     return response.json();
                 })
                 .then(data => {
-                    alert('تم إنشاء المهمة بنجاح!');
+                    alert('Task created successfully!');
                     this.reset();
                 })
-                .catch(error => alert(error.message));
+                .catch(error => {
+                    alert(error.message);
+                    console.error('Error:', error);
+                });
         });
     </script>
 

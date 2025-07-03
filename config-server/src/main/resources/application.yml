@@ -8,5 +8,6 @@ spring:
     config:
       server:
         git:
-          uri: file:///Users/shimaazakarya/config-repo
+          uri: file:///Users/shimaazakarya/Task-Project1/config-repo
           default-label: master
+          search-paths: config-files

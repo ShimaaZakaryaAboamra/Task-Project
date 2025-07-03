@@ -9,7 +9,7 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: lb://USER-SERVICE  # مطابق لاسم الخدمة المسجل في Eureka (كلها كبيرة)
+          uri: lb://USER-SERVICE
           predicates:
             - Path=/users/**
           filters:
